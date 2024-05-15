@@ -9,29 +9,49 @@ def Form_Escola():
 
     if 'Nome' not in st.session_state:
         st.session_state.Nome = ''
+        
+    if 'Idade' not in st.session_state:
+        st.session_state.Idade = None
     
-    ut.Divisor('Adicionar Aluno', 'cart-plus', 'rgb(20,80,90)', 'key_Aluno1')
+    if 'Classe' not in st.session_state:    
+        st.session_state.Classe
+    
+    ut.Divisor('Adicionar Aluno', 'person-fill', 'rgb(20,80,90)', 'key_Aluno1')
 
     with st.form(key = 'form_Aluno', clear_on_submit = True):
-        row_0_col1, row_0_col2 = st.columns([8, 0.01]) 
+        row_0_col1, row_0_col2, row_0_col3 = st.columns([6, 1.5, 2.5]) 
+        row_1_col1, row_1_col2, row_1_col3= st.columns([4, 2, 3])
+        row_2_col1, row_2_col2 = st.columns([10, 0.01]) 
         row_4_col1, row_4_col2, row_4_col3, row_4_col4, row_4_col5= st.columns([2, 2, 1, 2, 2]) 
         
         # Linha 00
         with row_0_col1:
-            st.session_state.Nome = st.text_input('Descrição', key='key_Nome')
+            st.session_state.Nome = st.text_input('Nome Aluno', key='key_Nome', placeholder='Informe o nome completo do aluno')
             if not st.session_state.Nome:
-                st.error('O campo "Descrição" é Obrigatorio.')
+                st.error('O campo "Nome Aluno" é Obrigatorio.')
         
         with row_0_col2:   
-            st.write('') 
+            st.session_state.Idade = st.number_input("Idade", step= 1, min_value= 0, max_value=100) 
+            if not st.session_state.Idade:
+                st.error('O campo "Idade" é Obrigatorio.')
         
-      
-        # Linha 04        
-        with row_4_col1:
+        with row_0_col3:   
+            st.session_state.Classe =  st.selectbox('Classe', classe, index=None, placeholder='Selecione a classe...')
+            if not st.session_state.Classe:
+                st.error('O campo "Classe" é Obrigatorio.')     
+       
+        Notas = {}
+        
+        with row_1_col3:
+            st.write('')   
+             
+        # Linha 02        
+        with row_2_col1:
             sac.menu([sac.MenuItem(type='divider')], color='rgb(20,80,90)', open_all=False, return_index=False, index=None, key='key_divisor')
-        with row_4_col2:   
+        with row_2_col2:   
             st.write('')
-
+            
+        # Linha 04 
         with row_4_col1:   
             st.write('')
         
@@ -49,7 +69,7 @@ def Form_Escola():
             
         if form_submit_button_Aluno:
             if st.session_state.Nome:
-                adicionar_alunos(st.session_state.Nome)           
+                adicionar_aluno(st.session_state.Nome,st.session_state.Idade, st.session_state.Classe, Notas)           
             else:
                 ut.Alerta('','Parametros para incluir um novo Aluno incompleto')   
     

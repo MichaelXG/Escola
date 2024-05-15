@@ -23,7 +23,7 @@ def Form_PesquisaEscola():
             Materia = st.selectbox('Matéria', materias_p, index=0, placeholder='Seleciona uma Matéria...')
         
         with row_0_col4:
-            Desempenho = st.number_input("Desempenhp", min_value= 0, max_value=100)
+            Desempenho = st.number_input("Desempenho", min_value= 0, max_value=100)
 
         with row_1_col1:
             sac.menu([sac.MenuItem(type='divider')], color='rgb(20,80,90)', open_all=False, return_index=False, index=None, key='key_divisor')

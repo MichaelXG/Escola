@@ -2,13 +2,17 @@ import streamlit as st
 import streamlit_antd_components as sac
 import pages.Escola.FormEscola as fe
 import pages.Escola.FormPesquisaEscola as fpe
+import pages.Escola.FormLancarNotas as fln
+
 from pages.Home.Create_Home import Create_Home    
 from pages.Login.Login import login_page    
 from Controllers.PadraoController import *  
 
 def Main():
-    # # Limpar os parâmetros necessários aqui
-    st.session_state.Descricao = None
+    # impar os parâmetros necessários aqui
+    st.session_state.Nome = None
+    st.session_state.Idade = None
+    st.session_state.Classe = None
 
     # Menu
     with st.sidebar:
@@ -28,10 +32,13 @@ def Main():
     with st.sidebar:
         selected = sac.menu([
             sac.MenuItem('Menu Principal', icon=sac.BsIcon(name='person-bounding-box', color='rgb(20,80,90)')),   
-             # Empresa
+            # Novo Aluno
             sac.MenuItem(type='divider'),
             sac.MenuItem('Novo Aluno',  icon=sac.BsIcon(name='person-fill', color='rgb(20,80,90)'), description='Adicionar novo Aluno'),
-            # Clientes
+            # Lançar Notas
+            sac.MenuItem(type='divider'),
+            sac.MenuItem('Lançar Notas',  icon=sac.BsIcon(name='graph-up-arrow', color='rgb(20,80,90)'), description='Lançar as notas dos alunos'),
+            # Listar Alunos
             sac.MenuItem(type='divider'),
             sac.MenuItem('Listar Alunos', icon=sac.BsIcon(name='clipboard2-data', color='rgb(20,80,90)'), description='Listar os Alunos'),
 
@@ -42,6 +49,9 @@ def Main():
     elif selected == 'Novo Aluno':
         if __name__ == "__main__":
             fe.Form_Escola()
+    elif selected == 'Lançar Notas':
+        if __name__ == "__main__":
+            fln.Form_Lancar_Notas()            
     elif selected == 'Listar Alunos':
          if __name__ == "__main__":
             fpe.Form_PesquisaEscola()   
@@ -52,7 +62,7 @@ if "logged_in" not in st.session_state:
  
 st.set_page_config(
     page_title="Escola",
-    page_icon="🧊",
+    page_icon=":school:",
     layout="wide",
     initial_sidebar_state="expanded"
 )   
