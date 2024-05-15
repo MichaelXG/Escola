@@ -76,21 +76,19 @@ def listar_alunos(pNome, pClasse, pMateria, pDesempenho):
 
     # Concatenar o DataFrame original com o DataFrame de Notas
     df = pd.concat([df.drop(columns=['Notas']), Notas_df], axis=1)
-    # Formatar as colunas de notas com 2 casas decimais
-    for col in Notas_df.columns:
-        df[col] = df[col].apply(lambda x: f'{x:.2f}')
     
-    if (pMateria and pMateria != 'Todas'):
-        if pMateria not in df.columns:
-            st.write(f"Matéria '{pMateria}' não encontrada.")
-            return pd.DataFrame()
-
+    # Convertendo as notas para float antes da formatação
+    for col in Notas_df.columns:
+        df[col] = df[col].astype(float)
+        
     df.insert(0, 'ID', range(1, len(df) + 1))
         
     # Aplicar os filtros
     if (pNome is None or pNome == '') and (pClasse == 'Todas' or pClasse is None) and (pMateria == 'Todas' or pMateria is None and pDesempenho is None or pDesempenho == 0):           
         df_filtrado = df
     else:       
+        df_filtrado = df.copy()
+        
         if pNome:
             # Nomes que começam com a string de busca
             inicio = df[df['Nome'].str.lower().str.startswith(pNome.lower())]
@@ -98,25 +96,22 @@ def listar_alunos(pNome, pClasse, pMateria, pDesempenho):
             contem = df[df['Nome'].str.lower().str.contains(pNome.lower())]
             # Remover duplicatas mantendo a ordem
             df_filtrado = pd.concat([inicio, contem]).drop_duplicates().reset_index(drop=True)
-        else:
-            df_filtrado = df.copy()
-            
+
+         # Filtrar por classe
         if pClasse and pClasse != 'Todas':
-            df_filtrado = df[df['Classe'].str.lower().str.startswith(pClasse.lower())]
-        
+            df_filtrado = df_filtrado[df_filtrado['Classe'].str.lower().str.startswith(pClasse.lower())]
+
         # Filtrar por matéria e desempenho
-        if pMateria and pMateria != 'Todas' and pDesempenho:
-            if pMateria not in df.columns:
+        if pMateria and pMateria != 'Todas' and pDesempenho is not None:
+            if pMateria not in df_filtrado.columns:
                 st.write(f"Matéria '{pMateria}' não encontrada.")
                 return pd.DataFrame()
-            
-            # Converter notas de strings em inteiros
-            df[pMateria] = df[pMateria].astype(float)
-            
-            # Inicializa df_filtrado se ainda não estiver inicializado
-            if 'df_filtrado' not in locals():
-                df_filtrado = df.copy()
             df_filtrado = df_filtrado[df_filtrado[pMateria] >= float(pDesempenho)]
-            
-    return df_filtrado
 
+    # Formatar as colunas de notas com 2 casas decimais após a filtragem
+    notas_cols = Notas_df.columns
+    for col in notas_cols:
+        if col in df_filtrado.columns:
+            df_filtrado[col] = df_filtrado[col].apply(lambda x: f'{x:.2f}')
+
+    return df_filtrado
