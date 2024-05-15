@@ -59,9 +59,15 @@ materias = ['Língua Portuguesa', 'Matemática','Ciências','História','Geograf
 materias_p = ['Todas'] + materias
 
 #  Função para adicionar uma novo Nome
-def adicionar_alunos(Nome):
-    registros_alunos.append(Nome )
-    st.write("Aluno adicionado com sucesso!")
+def adicionar_aluno(Nome, Idade, Classe, Notas):
+    novo_aluno = {
+        "Nome": Nome,
+        "Idade": Idade,
+        "Classe": Classe,
+        "Notas": Notas
+    }
+    registros_alunos.append(novo_aluno)
+    ut.Sucesso("", "Aluno adicionado com sucesso!")
 
 # Função para listar todas as Nomes ou usando um filtro
 def listar_alunos(pNome, pClasse, pMateria, pDesempenho):
@@ -81,7 +87,7 @@ def listar_alunos(pNome, pClasse, pMateria, pDesempenho):
     for col in Notas_df.columns:
         df[col] = df[col].astype(float)
         
-    df.insert(0, 'ID', range(1, len(df) + 1))
+    # df.insert(0, 'ID', range(1, len(df) + 1))
         
     # Aplicar os filtros
     if (pNome is None or pNome == '') and (pClasse == 'Todas' or pClasse is None) and (pMateria == 'Todas' or pMateria is None and pDesempenho is None or pDesempenho == 0):           
@@ -104,14 +110,22 @@ def listar_alunos(pNome, pClasse, pMateria, pDesempenho):
         # Filtrar por matéria e desempenho
         if pMateria and pMateria != 'Todas' and pDesempenho is not None:
             if pMateria not in df_filtrado.columns:
-                st.write(f"Matéria '{pMateria}' não encontrada.")
+                ut.Informacao("", f"Matéria '{pMateria}' não encontrada.")
                 return pd.DataFrame()
             df_filtrado = df_filtrado[df_filtrado[pMateria] >= float(pDesempenho)]
 
-    # Formatar as colunas de notas com 2 casas decimais após a filtragem
+    # Formatar as colunas de notas com 2 casas decimais
     notas_cols = Notas_df.columns
     for col in notas_cols:
         if col in df_filtrado.columns:
+            df_filtrado.fillna(0, inplace=True)  # Preencher NaN com zero
             df_filtrado[col] = df_filtrado[col].apply(lambda x: f'{x:.2f}')
-
     return df_filtrado
+
+# Adicionar Notas pelo Nome do aluno e a Matéria
+def adicionar_notas(Nome, Materia, Nota):
+    for aluno in registros_alunos:
+        if aluno["Nome"] == Nome:
+            aluno["Notas"][Materia] = Nota
+            return True
+    return False
