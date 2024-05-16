@@ -68,7 +68,7 @@ def Form_Escola():
             st.write('') 
             
         if form_submit_button_Aluno:
-            if st.session_state.Nome:
+            if st.session_state.Nome and st.session_state.Idade and st.session_state.Classe:
                 adicionar_aluno(st.session_state.Nome,st.session_state.Idade, st.session_state.Classe, Notas)           
             else:
                 ut.Alerta('','Parametros para incluir um novo Aluno incompleto')   
